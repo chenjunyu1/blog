@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <%include ./head.ejs%>
+    <style>
+    </style>
+</head>
+<body>
+<% include ./header.ejs%>
+<div class="jumbotron" style="margin-top: 10px">
+    <div class="col-md-4 grid con">
+        内容:<p><%=post.content%></p>
+        发表时间: <p class="time"><%=post.time%></p>
+    </div>
+</div>
+<div class="container">
+    <div class="row col-md-12">
+            <% post.comment.forEach(function (doc) {  %>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img width="20" class="media-object img-circle" src="/img/avatar/avatar.jpg" alt="...">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading"> <%=doc%></h4>
+                    </div>
+                </div>
+            <% }) %>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p><%=user.username%></p>
+            <textarea name="content" id="content" cols="100" rows="8"></textarea>
+            <button id="btn" class="btn btn-success" type="button">评论</button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $('#btn').click(function () {
+        let id="<%=post._id%>"
+        let comment = $('#content').val().trim();  //去首尾空格
+        if (content.length ==0){
+            alert('请说点东西')
+        }else {
+            $.post('/users/docomment',{comment,id},(data)=>{
+                if(data == 1){
+                    alert('发表成功')
+                    $('#ul').append('<li>'+comment+'</li>');
+                }else {
+                    alert('发表失败,重试,或者你没有登录')
+                    window.location='/index/detail/posts?id=<%=post._id%>'
+                }
+            })
+        }
+    })
+</script>
+</html>

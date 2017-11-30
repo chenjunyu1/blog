@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <title><%= title %></title>
+    <%include ./head.ejs%>
+</head>
+<body>
+<% include ./header.ejs%>
+<h2>设置个人头像</h2>
+<div class="jumbtron">
+    <div class="container">
+        <div class="row">
+            <div class="grid">
+                <img src="<%=user.avatar%>">
+            </div>
+            <div style="margin-top: 20px ;margin-left: -15px">
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary btn-small" data-toggle="modal" data-target="#myModal">
+                    修改头像
+                </button>
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">请选择你的头像(不要超过10m)</h4>
+                            </div>
+                            <form action="/users/doavatar" method="post" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <input type="file" name="img" style="width: 100%">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">上传</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <a href="/users/show/avatar" class="btn btn-default">裁剪头像</a>
+            </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>

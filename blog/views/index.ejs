@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%include ./head.ejs%>
+    <style>
+      #noLogin{
+        margin-top: 100px;
+        font-size: 20px;
+        line-height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+  <% include ./header.ejs%>
+  <div class="jumbotron" style="margin-top: 10px">
+    <%if(user){%>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-1">
+          <a href="/users/showavatar">
+            <img width="150" height="150" src=<%=user.avatar%>>
+          </a>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+          <p><%=user.username%></p>
+          <textarea name="content" id="content" cols="100" rows="8"></textarea>
+          <button id="btn" class="btn btn-success" type="button">发表内容</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="container" style="padding-top: 48px">
+      <nav>
+        <ul class="pagination">
+
+        </ul>
+      </nav>
+      <div class="row" id="div">
+
+      </div>
+    </div>
+    <%}else {%>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1>欢迎!游客</h1>
+          <p>blog是使用node.js做的一个博客项目,请先注册登录,才能正常使用</p>
+          <p>
+            <a class="btn btn-primary btn-lg" href="/users/register" role="button">注册</a>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <p>已有账号,请登录!!!!!</p>
+          <form method="post" action="/users/login">
+            <div class="form-group">
+              <label for="username">用户名</label>
+              <input type="text" name="username" class="form-control" id="username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+              <label for="password">密码</label>
+              <input type="password" name="psw" class="form-control" id="password" placeholder="请输入密码">
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" checked> 我接受用户的协议
+              </label>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">登录</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div id="noLogin"></div>
+      </div>
+    </div>
+    <%}%>
+  </div>
+  </body>
+  <script type="text/template" id="view">
+    <div class="col-md-4 grid con">
+      <h2><img width="40" height="40" class="img-circle" src={{= obj.avatar}}></h2>
+      <p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{=obj.content}}</p>
+      <p class="time">{{=obj.time}}</p>
+      <p><a href="/index/detail/posts?id={{=obj._id}}" class="btn btn-default">查看详细</a></p>
+    </div>
+  </script>
+<script>
+  $(function () {
+      $('#btn').click(function () {
+          let content = $('#content').val().trim();  //去首尾空格
+          if (content.length ==0){
+              alert('请说点东西')
+          }else {
+             $.post('/users/dopost',{content},(data)=>{
+                 if(data == 1){
+                     alert('发表成功')
+                     window.location='/'
+                 }else {
+                     alert('发表失败,重试,或者你没有登录')
+                     window.location='/'
+                 }
+             })
+          }
+      })
+      let compiled = _.template($('#view').html());
+      getdata(0);
+      function getdata(page) {
+          $.ajax({
+              'url':'/index/getAllPost?p='+page,
+              type:'get',
+              success:function (r) {
+                  $('#div').html('');
+                  if (r.err == 1){
+                      $('#noLogin').html('<h3>'+r.result+'</h3>');
+                  }else {
+                      (function int(i) {
+                          if(i == r.result.length){
+                              return;
+                          }
+                          //用户未登录问题
+                          $.get('/index/getavatar/'+r.result[i].username,(avatarMsg) => {
+                              //修改字典项
+                              r.result[i].avatar=avatarMsg.avatar;
+                              let html = compiled({'obj':r.result[i]})
+                              $('#div').append(html)
+                              int(i+1);
+                          })
+                      })(0)
+                  }
+              }
+          })
+      }
+
+      $.get('/index/getCount?col=posts',(data)=>{
+          if(data.err ==1){
+                return
+          }else {
+              createLi(data.count)
+          }
+      })
+      function createLi(count) {
+          //  一页6条
+          let pageAmount = Math.ceil(count/6);
+          for (let i=1;i<pageAmount+1;i++){
+              $('.pagination').append('<li><a href="javascript:void(0)">'+i+'</a></li>')
+          }
+          $('.pagination li:first').addClass('active');
+          $('.pagination li').click(function () {
+              let page = $(this).index()
+              getdata(page);
+              $(this).addClass('active').siblings().removeClass('active');
+          })
+
+      }
+
+
+//      $.get('/index/getAllPost',(data)=>{
+//          //data  ==>   登录的data  另外一种是登录成功的data
+//          if (data.err == 1){
+//               //未登录状态
+//              $('#noLogin').html(data.result)
+//          }else {
+//              //周六日的作业
+//              //嵌套发送ajax  ==>  异步问题  ==>  异步变同步
+//              // {result:[{"_id":"5a055cdb023a561ed85416c8","username":"小花","content":"你好","time":1510300891281,"comment":[]}}
+//              //{result:[{"_id":"5a055cdb023a561ed85416c8","username":"小花","content":"你好","time":1510300891281,"comment":[],'avatar':/img/avatar/avatar.jpg}}
+//              console.log(data)
+//          }
+//      })
+  })
+</script>
+</html>

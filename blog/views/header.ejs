@@ -1,0 +1,40 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">博客</span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">博客</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li <%   if (active == "index"){   %>
+                        class="active"
+                <%    }  %>>
+                    <a href="/">首页</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <% if(user){   %>
+                  <li><a>欢迎您!<%=user.username%></a></li>
+                  <li><a>个人中心</a></li>
+                  <li><a class="btn" href="/users/logout">注销</a></li>
+               <%   }else {  %>
+                <li <%   if (active == "register"){   %>
+                        class="active"
+                        <%    }  %>>
+                    <a href="/users/register">注册</a>
+                </li>
+                <li <%   if (active == "login"){   %>
+                        class="active"
+                        <%    }  %>>
+                    <a href="/users/login">登录</a>
+                </li>
+                <% }%>
+
+            </ul>
+        </div>
+    </div>
+
+</div>

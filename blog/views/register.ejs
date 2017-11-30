@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <%include ./head.ejs%>
+</head>
+<body>
+<% include ./header.ejs%>
+<div class="container">
+    <div class="row col-md-6" style="margin-top: 50px">
+        <h1>欢迎来到注册页面</h1>
+        <form method="post" action="/users/register">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" name="username" class="form-control" id="username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" name="psw" class="form-control" id="password" placeholder="请输入密码">
+            </div>
+            <div class="form-group">
+                <label>性别:</label>
+                <input type="radio" name="sex" value="man">男
+                <input type="radio" name="sex" value="woman">女
+            </div>
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <input type="number" name="age" class="form-control" id="age" placeholder="请输入年龄">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" checked> 我接受用户的协议
+                </label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
